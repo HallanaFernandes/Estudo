@@ -1,7 +1,3 @@
-[![capa](https://media.discordapp.net/attachments/1088554408469602305/1140761341506879508/Black_Technology_LinkedIn_Banner_6.jpg?width=1025&height=256)](https://github.com/SarahFeanor?tab=repositories)
-
-<sub> 🔗 [LinkedIn](https://www.linkedin.com/in/sarahfrezende/) | [Medium](https://medium.com/@sarahfrezende) |  [Portfólio de Data Science](https://github.com/sarahfeanor/Portfolio-DataScience)
- | [Portfólio Power BI](https://github.com/SarahFeanor/Portfolio_PowerBI)
 
 # 🔹 SQL
 
