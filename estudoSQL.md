@@ -264,11 +264,11 @@ Neste exemplo, a cláusula **`GROUP BY`** é usada para agrupar as vendas por **
 
 
 ## 🟣 **JOIN**:
-***Chave Primária***
+***Chave Primária:***
 
 É um atributo ou conjunto de atributos que identifica unicamente cada registro em uma tabela de banco de dados. Deve ser único para cada registro e não nulo.
 
-***Chave Estrangeira***
+***Chave Estrangeira:***
 
 É um campo em uma tabela que faz referência à chave primária de outra tabela. É usada para estabelecer uma relação entre duas tabelas, garantindo a integridade referencial.
 
@@ -284,13 +284,16 @@ Neste exemplo, a cláusula **`GROUP BY`** é usada para agrupar as vendas por **
 
 Retorna apenas as linhas onde há correspondência nas duas tabelas. Se não houver correspondência para uma linha em uma das tabelas, essa linha não será incluída no resultado.
 
-***LEFT JOIN***
+***LEFT JOIN:***
+
 Retorna todas as linhas da tabela à esquerda da cláusula **`LEFT JOIN`** (tabela da esquerda), independentemente de haver correspondência na tabela à direita (tabela da direita). Se não houver correspondência para uma linha na tabela à direita. As colunas da tabela da direita terão valores NULL no resultado
 
-***RIGHT JOIN***
+***RIGHT JOIN:***
+
 Retorna todas as linhas da tabela à direita da cláusula **`RIGHT JOIN`** (tabela da direita), independentemente de haver correspondência na tabela à esquerda (tabela da esquerda). Se não houver correspondência para uma linha na tabela à esquerda, as colunas da tabela à esquerda terão valores NULL no resultado.
 
-***FULL JOIN***
+***FULL JOIN:***
+
 inclui todas as linhas das tabelas da esquerda e da direita, combinando as linhas onde há correspondência e preenchendo as colunas com valores NULL onde não há correspondência.
 
 Tabela "alunos"
@@ -388,14 +391,15 @@ SELECT * FROM TABELA WHERE SALARIO > (SELECT AVG(SALARIO) FROM TABELA);
 
 uma janela que oferece uma visão específica dos dados em um banco de dados. Ela não armazena dados por si só, mas é uma consulta armazenada que retorna um conjunto de resultados baseado nos dados das tabelas subjacentes. É como criar uma nova perspectiva sobre os dados existentes, permitindo que você veja apenas as informações relevantes para uma determinada consulta ou relatório, sem precisar modificar a estrutura subjacente do banco de dados.
 
-| Funcionário      | Departamento | Salário   |
-+------------------+--------------+-----------+
+
+| Funcionário      | Departamento | Salário    |
+|------------------|--------------|----------- |
 | João Silva       | Vendas       | R$ 3500.00 |
 | Maria Santos     | Marketing    | R$ 4200.00 |
 | Pedro Oliveira   | TI           | R$ 5000.00 |
 | Ana Costa        | RH           | R$ 3800.00 |
 | Carlos Mendes    | Financeiro   | R$ 4600.00 |
-+------------------+--------------+-----------+
+
 
 View que calcule o salário líquido dos funcionários, com base no salário bruto e em um desconto fixo de imposto de 10%.
 
@@ -541,7 +545,7 @@ SELECT
 
 OVER() →as operações são realizadas para cada linha da tabela. Isso inclui opções como particionar os dados em grupos distintos (usando PARTITION BY) ou ordenar as linhas dentro desses grupos (usando ORDER BY).
 
-USANDO APENAS O OVER
+***USANDO APENAS O OVER***
 
 calcula a média de todos os valores de vendas sem levar em consideração a ordem das linhas na tabela. Assim, o valor da média será o mesmo para todas as linhas.
 
@@ -568,7 +572,7 @@ resultado:
 |  3  |  200  |    142.5    |
 |  4  |  120  |    142.5    |
 
-USANDO O OVER E O ORDER BY
+***USANDO O OVER E O ORDER BY:***
 
 ```sql
 SELECT id, valor, AVG(valor) OVER (ORDER BY id) AS media_valor
@@ -585,7 +589,7 @@ FROM vendas;
 uando usamos a cláusula ORDER BY, a função de janela AVG() OVER (ORDER BY id) calcula a média dos valores de vendas considerando a ordem dos IDs das vendas. Isso significa que cada linha terá a média dos valores de vendas até aquele ponto, considerando a ordem crescente dos IDs.
 * Na primeira linha, o valor de venda é 100. A média dos valores até esse ponto (considerando apenas a venda com ID 1) é 100
 
-USANDO O OVER E O PARTITION BY
+***USANDO O OVER E O PARTITION BY:***
 | id_loja | nome_loja | regiao  | qtd_vendida |
 |---------|-----------|---------|-------------|
 |  123    |  Loja_47  |  Norte  |    345      |
@@ -624,8 +628,7 @@ FROM
 |  234    |  Loja_64  |  Oeste  |    789      |           1023           |
 
 
-RANK:
-
+***RANK:***
 | Nome do Aluno | Nota |
 |---------------|------|
 |   João        |  85  |
@@ -661,9 +664,9 @@ O aluno Pedro tem a nota mais baixa (78) e, portanto, recebe a classificação 5
 
 Assim, a função RANK nos permite classificar os alunos de acordo com suas notas, criando uma ordem de classificação baseada em critérios específicos, neste caso, a nota.
 
-RANK X DENSE_RANK:
+***RANK X DENSE_RANK***
 
-RANK():
+****RANK()****
 
 A função RANK() atribui classificações às linhas em que ocorrem empates, pulando números conforme necessário. Isso significa que, se houver empates, as classificações subsequentes são puladas.
 
@@ -671,7 +674,7 @@ Por exemplo, se dois registros tiverem a mesma classificação, a próxima class
 
 A diferença entre as classificações é igual ao número de classificações que precedem uma linha, mais 1.
 
-DENSE_RANK():
+****DENSE_RANK():****
 
 A função DENSE_RANK() atribui classificações às linhas em que ocorrem empates, mas não pula números. Em vez disso, a classificação subsequente é incrementada por 1, independentemente de haver empates.
 
