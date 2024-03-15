@@ -1,10 +1,11 @@
-# <span style="color:pink">Minha Trilha de Aprendizado 🚀</span>
+# Minha trilha de aprendizado 🚀
 
-Neste espaço, guardarei minha trilha de aprendizado para acompanhar meu progresso e me manter organizado em minhas jornadas.
+Neste espaço, guardarei minha trilha de aprendizado para me manter organizada em minhas jornadas.
 
-- [<span style="color:green">**Para acompanhar os meus estudos de SQL**</span>](https://github.com/HallanaFernandes/Estudo/blob/master/estudoSQL.md)
+- [**Para acompanhar os meus estudos de SQL**](https://github.com/HallanaFernandes/Estudo/blob/master/estudoSQL.md)
 
-- [<span style="color:red">**Para acompanhar os meus estudos em Python**</span>](https://github.com/HallanaFernandes/Estudo/blob/master/estudosPYTHON.md)
+- [**Para acompanhar os meus estudos em Python**](https://github.com/HallanaFernandes/Estudo/blob/master/estudosPYTHON.md)
+
 
 
 
