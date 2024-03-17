@@ -1,4 +1,4 @@
-#  🐉 PYTHON
+# 🔹 PYTHON
 
 ## 🟣 **TIPOS DE VARIÁVEIS**:
  
@@ -647,6 +647,7 @@ preto
 ------
 descrição
 29 polegadas
+--------
 
 ***transformando os dicionários em uma lista de dicionários***
 
@@ -1274,7 +1275,8 @@ print('hello')
 mostrarlinha()
 ```
 vai me retornar →
------------------------------
+
+--------------------------
 oi
 ----------------------------
 ola

@@ -1,0 +1,1 @@
+[cases pegos da plataforma:](https://platform.stratascratch.com)
