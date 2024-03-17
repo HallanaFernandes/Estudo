@@ -682,4 +682,287 @@ Isso significa que não há lacunas nas classificações quando ocorrem empates.
 
 Portanto, mesmo que haja empates, a próxima classificação ainda será incrementada em 1.
 
+***MÉDIA E SOMA MÓVEL***
 
+| DataFechamento | FaturamentoMM |
+|----------------|---------------|
+| 2020-01-01     | 8             |
+| 2020-02-01     | 10            |
+| 2020-03-01     | 6             |
+| 2020-04-01     | 9             |
+| 2020-05-01     | 5             |
+| 2020-06-01     | 4             |
+| 2020-07-01     | 7             |
+| 2020-08-01     | 11            |
+| 2020-09-01     | 9             |
+| 2020-10-01     | 12            |
+| 2020-11-01     | 11            |
+| 2020-12-01     | 10            |
+
+```sql
+SELECT *, AVG(FaturamentoMM) OVER (ORDER BY DataFechamento ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS "fat. acum" 
+FROM Resultado;
+```
+ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING: DEFINE O INTERVALO QUE VAI SER USADO. Define a janela deslizante que será usada para calcular a média móvel. Aqui, estamos incluindo a linha atual (CURRENT ROW) e as linhas anterior (1 PRECEDING) e seguinte (1 FOLLOWING) à linha atual na janela. Isso significa que a média será calculada considerando os valores da linha atual, da linha anterior e da linha seguinte à linha atual.
+
+***FUNÇÃO LAG***
+
+```sql
+LAG(column_name, offset, default_value) OVER (ORDER BY order_column)
+```
+é usada para acessar o valor de uma coluna em uma linha anterior em relação à linha atual em um conjunto de resultados. Ela é comumente usada para calcular diferenças ou variações entre valores consecutivos em uma tabela.
+
+- **`column_name`**:
+
+ O nome da coluna da qual você deseja acessar o valor anterior.
+- **`offset`**: 
+
+O número de linhas antes da linha atual da qual você deseja acessar o valor. Se omitido, o padrão é 1, o que significa que a função retorna o valor da linha anterior.
+- **`default_value`**:
+
+ Um valor padrão a ser retornado se a linha anterior não estiver disponível (por exemplo, se for a primeira linha do conjunto de resultados).
+- **`ORDER BY order_column`**:
+
+ Especifica a ordem em que as linhas devem ser consideradas para determinar a "linha anterior".
+
+| Data       | Vendas |
+|------------|--------|
+| 2022-01-01 | 100    |
+| 2022-01-02 | 120    |
+| 2022-01-03 | 150    |
+| 2022-01-04 | 130    |
+| 2022-01-05 | 140    |
+
+
+```sql
+SELECT
+    Data,
+    Vendas,
+    LAG(Vendas, 1, 0) OVER (ORDER BY Data) AS Vendas_Anteriores                
+FROM
+    Vendas;
+```
+resultado:
+
+| Data       | Vendas | Vendas_Anteriores |
+|------------|--------|-------------------|
+| 2022-01-01 | 100    | 0                 |
+| 2022-01-02 | 120    | 100               |
+| 2022-01-03 | 150    | 120               |
+| 2022-01-04 | 130    | 150               |
+| 2022-01-05 | 140    | 130               |
+
+tabela: resultado
+| DataFechamento | FaturamentoMM |
+|----------------|---------------|
+| 2020-01-01     | 8             |
+| 2020-02-01     | 10            |
+| 2020-03-01     | 6             |
+| 2020-04-01     | 9             |
+| 2020-05-01     | 5             |
+| 2020-06-01     | 4             |
+| 2020-07-01     | 7             |
+| 2020-08-01     | 11            |
+| 2020-09-01     | 9             |
+| 2020-10-01     | 12            |
+| 2020-11-01     | 11            |
+| 2020-12-01     | 10            |
+| 2019-12-01     | 20            |
+| 2019-11-01     | 30            |
+| 2019-10-01     | 24            |
+
+
+```sql
+SELECT
+    *,
+    LAG(FaturamentoMM, 1, FaturamentoMM) OVER (ORDER BY DataFechamento) AS desloc
+FROM
+    resultado;
+```
+
+| DataFechamento | FaturamentoMM | desloc |
+|----------------|---------------|--------|
+| 2019-10-01     | 24            | 24     |
+| 2019-11-01     | 30            | 24     |
+| 2019-12-01     | 20            | 30     |
+| 2020-01-01     | 8             | 20     |
+| 2020-02-01     | 10            | 8      |
+| 2020-03-01     | 6             | 10     |
+| 2020-04-01     | 9             | 6      |
+| 2020-05-01     | 5             | 9      |
+| 2020-06-01     | 4             | 5      |
+| 2020-07-01     | 7             | 4      |
+| 2020-08-01     | 11            | 7      |
+| 2020-09-01     | 9             | 11     |
+| 2020-10-01     | 12            | 9      |
+| 2020-11-01     | 11            | 12     |
+| 2020-12-01     | 10            | 11     |
+
+***ánalise month-over-month (MOM)***
+
+```sql
+SELECT 
+    *, 
+    LAG(FaturamentoMM, 1, FaturamentoMM) OVER (ORDER BY DataFechamento) AS desloc,
+    (FaturamentoMM / LAG(FaturamentoMM, 1, FaturamentoMM) OVER (ORDER BY DataFechamento) - 1) * 100 AS '%MOM' 
+FROM 
+    resultado;
+```
+
+| DataFechamento | FaturamentoMM | desloc | %MOM     |
+|----------------|---------------|--------|----------|
+| 2019-10-01     | 24            | 24     | NULL     |
+| 2019-11-01     | 30            | 24     | 25       |
+| 2019-12-01     | 20            | 30     | -33.3333 |
+| 2020-01-01     | 8             | 20     | -60      |
+| 2020-02-01     | 10            | 8      | 25       |
+| 2020-03-01     | 6             | 10     | -40      |
+| 2020-04-01     | 9             | 6      | 50       |
+| 2020-05-01     | 5             | 9      | -44.4444 |
+| 2020-06-01     | 4             | 5      | -20      |
+| 2020-07-01     | 7             | 4      | 75       |
+| 2020-08-01     | 11            | 7      | 57.1429  |
+| 2020-09-01     | 9             | 11     | -18.1818 |
+| 2020-10-01     | 12            | 9      | 33.3333  |
+| 2020-11-01     | 11            | 12     | -8.3333  |
+| 2020-12-01     | 10            | 11     | -9.0909  |
+
+***ánalise year-over-year (YOY)***
+
+```sql
+SELECT 
+    *, 
+    LAG(FaturamentoMM, 12, FaturamentoMM) OVER (ORDER BY DataFechamento) AS desloc,
+    (FaturamentoMM / LAG(FaturamentoMM, 12, FaturamentoMM) OVER (ORDER BY DataFechamento) - 1 ) * 100 AS '%MOM' 
+FROM 
+    Resultado;
+
+```
+## 🟣 **STORED PROCEDURES**:
+
+Uma stored procedure (procedimento armazenado) é um conjunto de instruções SQL pré-compiladas e armazenadas no banco de dados. Ela pode receber parâmetros, realizar operações complexas e retornar resultados. 
+
+***criando procedure***
+```sql
+
+
+CREATE PROCEDURE nome_da_stored_procedure(
+    -- Parâmetros (opcional)
+    parametro1 tipo_de_dado,
+    parametro2 tipo_de_dado
+)
+BEGIN
+    -- Corpo da stored procedure
+    -- Consultas, operações e lógica de negócios aqui
+
+    -- Exemplo:
+    SELECT coluna1, coluna2
+    FROM tabela
+    WHERE coluna1 = parametro1;
+
+    -- Mais lógica, atualizações, etc.
+
+END
+
+```
+exemplo de calculo de folha de pagamento
+sem parâmetro
+
+```sql
+
+
+CREATE PROCEDURE CalcularFolhaPagamentoComDescontos()
+BEGIN
+    -- Variáveis para armazenar os valores dos descontos
+    DECLARE IR DECIMAL(10, 2);
+    DECLARE FGTS DECIMAL(10, 2);
+    DECLARE INSS DECIMAL(10, 2);
+    
+    -- Calcular os descontos
+    SET IR = 0.07;  -- 7% de IR
+    SET FGTS = 0.08;  -- 8% de FGTS
+    SET INSS = 0.09;  -- 9% de INSS
+
+    -- Calcular o salário líquido para cada funcionário
+    SELECT 
+        nome, 
+        departamento, 
+        salario,
+        salario - (salario * IR) - (salario * FGTS) - (salario * INSS) AS salario_liquido
+    FROM Funcionarios;
+END
+
+```
+resultado:
+
+| Nome           | Departamento | Salário  | Salário Líquido |
+|----------------|--------------|----------|-----------------|
+| João Silva     | Vendas       | 3500.00  | 2660.00         |
+| Maria Santos   | Marketing    | 4200.00  | 3192.00         |
+| Pedro Oliveira | TI           | 5000.00  | 3800.00         |
+| Ana Costa      | RH           | 3800.00  | 2888.00         |
+| Carlos Mendes  | Financeiro   | 4600.00  | 3496.00         |
+
+entretanto a procedure sem parâmetro não fica dinâmica.
+
+com parâmetro:
+
+```sql
+CREATE PROCEDURE CalcularFolhaPagamentoComDescontos
+    IN taxaIR DECIMAL(5,2),
+    IN taxaFGTS DECIMAL(5,2),
+    IN taxaINSS DECIMAL(5,2)
+AS
+BEGIN
+    -- Calcular o salário líquido para cada funcionário
+    SELECT 
+        nome, 
+        departamento, 
+        salario,
+        salario - (salario * taxaIR) - (salario * taxaFGTS) - (salario * taxaINSS) AS salario_liquido
+    FROM Funcionarios;
+END;
+
+CALL CalcularFolhaPagamentoComDescontos(0.06, 0.08, 0.05);
+```
+
+resultado:
+
+| Nome           | Departamento | Salário  | Salário Líquido |
+|----------------|--------------|----------|-----------------|
+| João Silva     | Vendas       | 3500.00  | 2835.00         |
+| Maria Santos   | Marketing    | 4200.00  | 3402.00         |
+| Pedro Oliveira | TI           | 5000.00  | 4050.00         |
+| Ana Costa      | RH           | 3800.00  | 3078.00         |
+| Carlos Mendes  | Financeiro   | 4600.00  | 3726.00         |
+
+***chamando procedure***
+
+```sql
+CALL nome_da_stored_procedure(valor_parametro1, valor_parametro2);
+```
+
+***excluindo uma procedure***
+
+```sql
+DROP PROCEDURE IF EXISTS NomeProcedure;
+```
+
+***Ordem de comandos***
+
+1. **SELECT**: Especifica quais colunas você deseja selecionar e pode incluir funções de agregação, como **`COUNT()`**, **`SUM()`**, **`AVG()`**, **`MIN()`**, **`MAX()`**, entre outras.
+
+2. **FROM**: Especifica de qual tabela (ou tabelas) você está selecionando os dados.
+
+3. **JOIN**: Une diferentes tabelas com base em uma condição de associação.
+
+4. **WHERE**: Aplica condições para filtrar os dados.
+5. **GROUP BY**: Agrupa os dados com base em uma ou mais colunas.
+
+6. **HAVING**: Aplica condições de filtro a grupos criados pela cláusula **`GROUP BY`**.
+
+7. **Funções condicionais**: Inclui funções condicionais, como **`CASE`**, **`IF`**, **`COALESCE`**, entre outras, que podem ser usadas para retornar valores condicionalmente com base em certas condições.
+
+8. **ORDER BY**: Especifica a ordem de classificação dos resultados.
+
+9. **LIMIT**: Limita o número de linhas retornadas pelo resultado.
