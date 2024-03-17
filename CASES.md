@@ -1,1 +1,1 @@
-[cases pegos da plataforma:](https://platform.stratascratch.com)
+cases pegos da plataforma: [strata](https://platform.stratascratch.com)
